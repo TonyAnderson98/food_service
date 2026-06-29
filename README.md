@@ -28,3 +28,14 @@ Sistema do ramo alimentício cobrindo fluxo compelto: o cliente faz o pedido, a 
 
 - **CRUD de cardápio**: Adicionar, Editar, Desativar ou Remover produtos do cardápio
 
+# Estrutura de Pastas
+O projeto está estruturado da seguinte forma
+```text
+food-service/
+├── apps/
+│   ├── server          Backend: API Node + Express
+│   └── client          Frontend: Aplicação Flutter
+├── doc
+├── monitoring          Observabilidade: Grafana + Loki + Prometheus
+└── SCHEMA              Schema do Banco de Dados
+```

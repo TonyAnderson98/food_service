@@ -1,0 +1,51 @@
+name: 'food-service'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: food-service-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: food_service
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ../SCHEMA/SCHEMA.SQL:/docker-entrypoint-initdb.d/init.sql:ro
+
+  server:
+    build:
+      context: ../apps/server
+      dockerfile: Dockerfile
+    container_name: food-service-server
+    restart: always
+    expose:
+      - "3000"
+    volumes:
+      - ../apps/server:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - PORT=3000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=food_service
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:alpine
+    container_name: food-service-nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - server
+
+volumes:
+  pgdata:
